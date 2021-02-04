@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+source "$PLUGIN_AVAILABLE_PATH/config/functions"
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
+
+trigger-builder-nix-builder-detect() {
+  declare desc="builder-nix builder-detect plugin trigger"
+  declare trigger="builder-detect"
+  declare APP="$1" SOURCECODE_WORK_DIR="$2"
+
+  if [[ -f "$SOURCECODE_WORK_DIR/docker.nix" ]]; then
+    echo "nix"
+    return
+  fi
+}
+
+trigger-builder-nix-builder-detect "$@"

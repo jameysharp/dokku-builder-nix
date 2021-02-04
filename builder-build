@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+source "$PLUGIN_AVAILABLE_PATH/config/functions"
+
+trigger-builder-nix-builder-build() {
+  declare desc="builder-nix builder-build plugin trigger"
+  declare trigger="builder-build"
+  declare BUILDER_TYPE="$1" APP="$2" SOURCECODE_WORK_DIR="$3"
+
+  if [[ "$BUILDER_TYPE" != "nix" ]]; then
+    return
+  fi
+
+
+  dokku_log_info1 "Building $APP with nix..."
+
+  if ! command -v "nix-build" &>/dev/null; then
+    dokku_log_fail "Missing nix-build, install it"
+  fi
+
+  local IMAGE=$(get_app_image_name "$APP")
+
+  pushd "$SOURCECODE_WORK_DIR" &>/dev/null
+
+  plugn trigger pre-build-nix "$APP" "$SOURCECODE_WORK_DIR"
+
+  local SCRIPT=$(nix-build "$SOURCECODE_WORK_DIR/docker.nix")
+
+  local TMP_IMAGE=$($SCRIPT | "$DOCKER_BIN" load | sed -n '$s/^Loaded image: //p')
+
+  echo "FROM $TMP_IMAGE" | suppress_output "$DOCKER_BIN" image build --label=com.dokku.image-stage=build --label=org.label-schema.schema-version=1.0 --label=org.label-schema.vendor=dokku --label=com.dokku.app-name=$APP --label=dokku -t "$IMAGE" -
+
+  suppress_output "$DOCKER_BIN" image rm "$TMP_IMAGE"
+
+  plugn trigger post-build-nix "$APP" "$SOURCECODE_WORK_DIR"
+}
+
+trigger-builder-nix-builder-build "$@"
