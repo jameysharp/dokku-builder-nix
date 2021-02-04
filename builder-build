@@ -4,6 +4,9 @@ set -eo pipefail
 source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
 source "$PLUGIN_AVAILABLE_PATH/config/functions"
 
+export NIX_PATH="/nix/var/nix/profiles/per-user/root/channels"
+export PATH="/nix/var/nix/profiles/default/bin:$PATH"
+
 trigger-builder-nix-builder-build() {
   declare desc="builder-nix builder-build plugin trigger"
   declare trigger="builder-build"
