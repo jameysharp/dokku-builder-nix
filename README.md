@@ -14,8 +14,10 @@ $ dokku plugin:install https://github.com/jameysharp/dokku-builder-nix.git
 ```
 
 (As of this writing, the `builder-detect` trigger that this plugin relies on is
-not yet in a released version of Dokku. See dokku/dokku#4379 for the current
-status.)
+not yet in a released version of Dokku. See [dokku/dokku#4379][] for the
+current status.)
+
+[dokku/dokku#4379]: https://github.com/dokku/dokku/pull/4379
 
 ## Usage
 
