@@ -6,6 +6,11 @@ build your app images, instead of the default Herokuish or Dockerfile builders.
 [dokku]: https://dokku.com/
 [Nix]: https://nixos.org/
 
+## Requirements
+
+- Dokku 0.24.x
+- The `nix-build` binary
+
 ## Installation
 
 ```sh
