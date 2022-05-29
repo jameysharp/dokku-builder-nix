@@ -33,7 +33,7 @@ trigger-builder-nix-builder-build() {
 
   local TMP_IMAGE=$($SCRIPT | "$DOCKER_BIN" load | sed -n '$s/^Loaded image: //p')
 
-  echo "FROM $TMP_IMAGE" | suppress_output "$DOCKER_BIN" image build --label=com.dokku.image-stage=build --label=org.label-schema.schema-version=1.0 --label=org.label-schema.vendor=dokku --label=com.dokku.app-name=$APP --label=dokku -t "$IMAGE" -
+  echo "FROM $TMP_IMAGE" | suppress_output "$DOCKER_BIN" image build --label=dokku --label=org.label-schema.schema-version=1.0 --label=org.label-schema.vendor=dokku --label=com.dokku.image-stage=build --label=com.dokku.builder-type=nix --label=com.dokku.app-name=$APP -t "$IMAGE" -
 
   suppress_output "$DOCKER_BIN" image rm "$TMP_IMAGE"
 
